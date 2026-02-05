@@ -1,0 +1,58 @@
+{
+  "name": "@qontext/n8n-nodes-qontext",
+  "version": "0.1.0",
+  "description": "Retrieve and ingest context to and from Qontext vaults",
+  "license": "MIT",
+  "homepage": "https://github.com/qontext-ai/n8n-nodes-qontext",
+  "keywords": [
+    "n8n-community-node-package"
+  ],
+  "author": "Valeska Pachelbel <valeskapachelbel@gmail.com> (https://github.com/valeskaaa)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qontext-ai/n8n-nodes-qontext.git"
+  },
+  "scripts": {
+    "build": "n8n-node build",
+    "build:watch": "tsc --watch",
+    "dev": "n8n-node dev",
+    "lint": "eslint credentials nodes",
+    "lint:fix": "eslint credentials nodes --fix",
+    "release": "n8n-node release",
+    "prepublishOnly": "n8n-node prerelease"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/QontextApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Qontext/Qontext.node.js"
+    ]
+  },
+  "main": "index.js",
+  "devDependencies": {
+    "@n8n/node-cli": "^0.1.0",
+    "eslint": "9.32.0",
+    "eslint-import-resolver-typescript": "^4.4.3",
+    "eslint-plugin-import-x": "^4.15.2",
+    "eslint-plugin-n8n-nodes-base": "^1.16.6",
+    "fast-glob": "^3.3.3",
+    "prettier": "3.6.2",
+    "release-it": "^19.0.4",
+    "rimraf": "^6.0.1",
+    "typescript": "5.9.2",
+    "typescript-eslint": "^8.35.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "overrides": {
+    "lodash": "^4.17.23",
+    "form-data": "^4.0.4"
+  }
+}

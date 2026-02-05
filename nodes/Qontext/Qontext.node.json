@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-base.Qontext",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Data & Storage", "Productivity"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.qontext.ai/get_started"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.qontext.ai/get_started"
+			}
+		]
+	}
+}
