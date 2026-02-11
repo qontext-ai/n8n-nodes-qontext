@@ -23,7 +23,7 @@ export const retrievalOperations: INodeProperties[] = [
 						method: 'POST',
 						url: 'v1/retrieval',
 						body: {
-							knowledgeGraphId: '={{$parameter["knowledgeGraphId"]}}',
+							vaultId: '={{$parameter["vaultId"]}}',
 							prompt: '={{$parameter["prompt"]}}',
 							limit: '={{$parameter["additionalFields.limit"] || 5}}',
 							depth: '={{$parameter["additionalFields.depth"] || 1}}',

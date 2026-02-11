@@ -6,7 +6,7 @@ import { INodeProperties } from "n8n-workflow/dist/esm/interfaces";
 export const ingestWebsite: INodeProperties[] = [
     {
         displayName: 'Vault ID',
-        name: 'knowledgeGraphId',
+        name: 'vaultId',
         type: 'string',
         default: '',
         description: 'The ID of the vault that the data should be ingested into',

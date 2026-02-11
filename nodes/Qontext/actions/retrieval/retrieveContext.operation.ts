@@ -6,7 +6,7 @@ import { INodeProperties } from "n8n-workflow/dist/esm/interfaces";
 export const retrievalContextOperation: INodeProperties[] = [
 	{
 		displayName: 'Vault ID',
-		name: 'knowledgeGraphId',
+		name: 'vaultId',
 		type: 'string',
 		default: '',
 		description: 'The ID of the vault that should be used to answer the question',
