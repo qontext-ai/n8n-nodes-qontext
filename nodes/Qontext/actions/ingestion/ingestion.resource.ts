@@ -25,7 +25,7 @@ export const ingestionOperations: INodeProperties[] = [
                         method: 'POST',
                         url: 'v1/ingestion/any',
                         body: {
-                            knowledgeGraphId: '={{$parameter["knowledgeGraphId"]}}',
+                            vaultId: '={{$parameter["vaultId"]}}',
                             string_data: '={{$parameter["string_data"]}}',
                             source: {
                                 source_integration: '={{ $parameter["source"].source.source_integration }}',
@@ -46,7 +46,7 @@ export const ingestionOperations: INodeProperties[] = [
                         method: 'POST',
                         url: 'v1/ingestion/unstructured',
                         body: {
-                            knowledgeGraphId: '={{$parameter["knowledgeGraphId"]}}',
+                            vaultId: '={{$parameter["vaultId"]}}',
                             text: '={{$parameter["text"]}}',
                         },
                     },
@@ -62,7 +62,7 @@ export const ingestionOperations: INodeProperties[] = [
                         method: 'POST',
                         url: 'v1/ingestion/website',
                         body: {
-                            knowledgeGraphId: '={{$parameter["knowledgeGraphId"]}}',
+                            vaultId: '={{$parameter["vaultId"]}}',
                             url: '={{$parameter["url"]}}',
                             type: '={{$parameter["type"]}}',
                         },
