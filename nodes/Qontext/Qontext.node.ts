@@ -12,7 +12,7 @@ export class Qontext implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] || "Select operation"}}: {{$parameter["resource"] || "Select resource"}}',
-		description: 'Interact with the Qontext  API',
+		description: 'Ingest and retrieve company context with the Qontext API',
 		defaults: {
 			name: 'Qontext',
 		},
