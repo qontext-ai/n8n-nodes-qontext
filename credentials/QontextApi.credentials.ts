@@ -23,7 +23,7 @@ export class QontextApi implements ICredentialType {
 			default: 'https://api.qontext.ai',
 		},
 		{
-			displayName: 'X-API-Key',
+			displayName: 'API Key',
 			name: 'xApiKey',
 			type: 'string',
 			default: '',

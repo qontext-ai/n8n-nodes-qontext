@@ -1,7 +1,7 @@
 // Here we define what to show when the `ingestUnstructuredText` operation is selected.
 // We do that by adding `operation: ["ingestUnstructuredText"]` to `displayOptions.show`
 
-import { INodeProperties } from "n8n-workflow/dist/esm/interfaces";
+import type { INodeProperties } from 'n8n-workflow';
 
 export const ingestUnstructuredText: INodeProperties[] = [
     {
