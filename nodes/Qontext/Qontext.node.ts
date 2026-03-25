@@ -21,11 +21,10 @@ export class Qontext implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [{ name: 'qontextApi', required: true }],
 		requestDefaults: {
-			baseURL: 'https://api.qontext.ai',
+			baseURL: '={{$credentials.domain}}',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
-				'X-API-Key': '={{$credentials?.xApiKey}}'
 			},
 		},
 		properties: [
@@ -36,8 +35,8 @@ export class Qontext implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: [
-					{ name: 'Retrieval', value: 'retrieval' },
 					{ name: 'Ingestion', value: 'ingestion' },
+					{ name: 'Retrieval', value: 'retrieval' },
 				],
 				default: 'retrieval',
 			},
