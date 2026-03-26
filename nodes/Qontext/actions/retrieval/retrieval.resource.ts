@@ -25,9 +25,9 @@ export const retrievalOperations: INodeProperties[] = [
 						body: {
 							vaultId: '={{$parameter["vaultId"]}}',
 							prompt: '={{$parameter["prompt"]}}',
-							limit: '={{$parameter["additionalFields.limit"] || 5}}',
-							depth: '={{$parameter["additionalFields.depth"] || 1}}',
-                            includeSources: true
+							includeSources: true,
+							limit: 5,
+							depth: 1
 						},
 					},
 				},
