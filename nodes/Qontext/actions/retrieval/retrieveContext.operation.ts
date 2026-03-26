@@ -1,7 +1,7 @@
 // Here we define what to show when the `retrieveContext` operation is selected.
 // We do that by adding `operation: ["retrieveContext"]` to `displayOptions.show`
 
-import { INodeProperties } from "n8n-workflow/dist/esm/interfaces";
+import type { INodeProperties } from 'n8n-workflow';
 
 export const retrievalContextOperation: INodeProperties[] = [
 	{
@@ -59,6 +59,13 @@ export const retrievalContextOperation: INodeProperties[] = [
 				default: 5,
 				// eslint-disable-next-line n8n-nodes-base/node-param-description-wrong-for-limit
 				description: 'Number of nodes on first level to consider',
+				routing: {
+					send: {
+						type: 'body',
+						property: 'limit',
+						value: '={{$value}}',
+					},
+				},
 			},
 			{
 				displayName: 'Depth',
@@ -66,6 +73,13 @@ export const retrievalContextOperation: INodeProperties[] = [
 				type: 'number',
 				default: 1,
 				description: 'Depth of nodes to retrieve from the graph',
+				routing: {
+					send: {
+						type: 'body',
+						property: 'depth',
+						value: '={{$value}}',
+					},
+				},
 			},
 		],
 	},
