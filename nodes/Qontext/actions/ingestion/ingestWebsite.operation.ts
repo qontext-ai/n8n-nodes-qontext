@@ -26,7 +26,7 @@ export const ingestWebsite: INodeProperties[] = [
             rows: 5,
         },
         default: '',
-        description: 'The text data to ingest',
+        description: 'The URL of the website to crawl and ingest',
         displayOptions: {
             show: {
                 resource: ['ingestion'],
