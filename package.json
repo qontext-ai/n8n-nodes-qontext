@@ -1,6 +1,6 @@
 {
   "name": "@qontext/n8n-nodes-qontext",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Retrieve and ingest context to and from Qontext vaults",
   "license": "MIT",
   "homepage": "https://github.com/qontext-ai/n8n-nodes-qontext",
