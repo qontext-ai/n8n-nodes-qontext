@@ -24,7 +24,7 @@ export const fileOperations: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a file',
-				description: 'Create a file at the path given. Not an upsert: a path already holding a file is a conflict, so this never overwrites and never creates a duplicate.',
+				description: 'Create a file at the path given. Not an upsert: a path already holding a file is a conflict, never an overwrite.',
 				routing: {
 					request: {
 						method: 'POST',
@@ -37,7 +37,7 @@ export const fileOperations: INodeProperties[] = [
 				value: 'delete',
 				action: 'Delete a file',
 				description:
-					'Delete a file. Its change history goes with it, so this is not reversible through this API. A protected file, or one with changes still awaiting review, is refused and nothing is removed.',
+					'Delete a file. Its change history goes with it, so this is not reversible. A protected file, or one with changes awaiting review, is refused.',
 				routing: {
 					request: {
 						method: 'DELETE',
@@ -61,7 +61,7 @@ export const fileOperations: INodeProperties[] = [
 				value: 'get',
 				action: 'Get a file',
 				description:
-					'Get a file by its ID. The workspace is implicit in the API key, so a file in another workspace answers as not found and existence does not leak.',
+					'Get a file by its ID. A file in another workspace answers as not found, so existence does not leak.',
 				routing: {
 					request: {
 						method: 'GET',
@@ -74,7 +74,7 @@ export const fileOperations: INodeProperties[] = [
 				value: 'getAll',
 				action: 'Get many files',
 				description:
-					'List files. Cursor paginated, never offset. A short page does not mean the end: items the key may not read are dropped after the page is read, so page until there are no more.',
+					'List files. Cursor paginated, never offset: a short page does not mean the end, so page until there are no more.',
 				routing: {
 					request: {
 						method: 'GET',
@@ -88,7 +88,7 @@ export const fileOperations: INodeProperties[] = [
 				value: 'update',
 				action: 'Update a file',
 				description:
-					'Rename a file, move it to another folder, or change whether writes to it go to review. Exactly one of the three per request. The ID never changes, so IDs held elsewhere stay valid; the path does change.',
+					'Rename a file, move it to another folder, or change whether writes to it go to review. Exactly one of the three per request.',
 				routing: {
 					request: {
 						method: 'PATCH',
@@ -100,7 +100,7 @@ export const fileOperations: INodeProperties[] = [
 				name: 'Update Content',
 				value: 'updateContent',
 				action: 'Update file content',
-				description: 'Replace the entire content of a file. The response carries the content that actually landed, which is not always the content sent: an edit based on an older change is merged with the work that landed since.',
+				description: 'Replace the entire file content, based on the Base Change ID of the file. If the file changed first the edit is merged when possible, so use the returned content for the next edit.',
 				routing: {
 					request: {
 						method: 'PUT',

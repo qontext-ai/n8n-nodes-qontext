@@ -45,8 +45,8 @@ stays at 1, so existing nodes pick up the new operation list on upgrade.
   naming its replacement, instead of sending a bare request and reporting `Cannot GET /`.
 - Credential documentation URL and the node's codex metadata pointed at
   `docs.qontext.ai/get_started`, which 404s. Now `get-started`.
-- Codex node identifier was `n8n-nodes-base.Qontext`, which is wrong for a community
-  package.
+- Codex node identifier was `n8n-nodes-base.Qontext`. Community nodes use the bare
+  package name, so it is now `@qontext/n8n-nodes-qontext`.
 
 ### Changed
 - Upgraded `@n8n/node-cli` to 0.47, which brings the `@n8n/eslint-plugin-community-nodes`

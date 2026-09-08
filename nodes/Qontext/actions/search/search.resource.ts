@@ -35,7 +35,7 @@ export const searchOperations: INodeProperties[] = [
 				value: 'hybrid',
 				action: 'Search files by meaning',
 				description:
-					'Find the files that match your query and return their content, best match first. It also matches on meaning, which finds files that answer the query without using the same words. A result appears only if this API key can read the file. A new or changed file is not searchable straight away, so search again in a moment if you do not see it.',
+					'Find the files that match your query and return their content, best match first. Also matches on meaning, so it finds files that answer the query without using the same words.',
 				routing: {
 					request: {
 						method: 'POST',
@@ -49,7 +49,7 @@ export const searchOperations: INodeProperties[] = [
 				value: 'regex',
 				action: 'Search file lines with a regular expression',
 				description:
-					'Find lines that match an RE2 regular expression. Each result cites the file the lines came from. Results are not relevance-ranked. A result appears only if this API key can read the file.',
+					'Find lines that match an RE2 regular expression, citing the file each came from. Results are not relevance-ranked.',
 				routing: {
 					request: {
 						method: 'POST',

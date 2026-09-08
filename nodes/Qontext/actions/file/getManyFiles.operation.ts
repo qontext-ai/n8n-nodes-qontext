@@ -26,7 +26,7 @@ export const getManyFilesOperation: INodeProperties[] = [
 				description: 'Files directly inside this folder, one level only. Use Path Prefix for a whole subtree. A folder ID naming nothing is an empty collection.',
 			},
 			{
-				name: 'Nothing',
+				name: 'None',
 				value: 'none',
 				description: 'List every file the key can read',
 			},

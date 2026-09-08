@@ -54,7 +54,7 @@ export function listProperties(resource: string, operation: string): INodeProper
 			default: '',
 			placeholder: 'e.g. c_9f2k1x8b3m7q0v',
 			description:
-				'A nextCursor from an earlier page. Opaque: store and echo it, never parse or construct one. A cursor belongs to the query that issued it, so changing a filter means starting again from the first page.',
+				'A nextCursor from an earlier page. Opaque: echo it back, never construct one. Changing a filter invalidates it, so start again from the first page.',
 			displayOptions: { show: { ...show, returnAll: [false] } },
 			routing: {
 				send: {

@@ -23,7 +23,7 @@ export const folderOperations: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a folder',
-				description: 'Create one folder, creating missing parents along a path. Not an upsert: a path already holding a folder is a conflict, so this never merges into an existing folder.',
+				description: 'Create one folder at a path, creating missing parents, or inside a parent folder when given a name. Not an upsert: an occupied path is a conflict.',
 				routing: {
 					request: {
 						method: 'POST',
@@ -35,7 +35,7 @@ export const folderOperations: INodeProperties[] = [
 				name: 'Delete',
 				value: 'delete',
 				action: 'Delete a folder',
-				description: 'Delete a folder. Refuses a folder that still has contents unless Recursive is on, in which case the whole subtree goes.',
+				description: 'Delete a folder. Refuses a folder that still has contents unless Recursive is on. The refusal changes nothing.',
 				routing: {
 					request: {
 						method: 'DELETE',
@@ -59,7 +59,7 @@ export const folderOperations: INodeProperties[] = [
 				value: 'get',
 				action: 'Get a folder',
 				description:
-					'Get a folder by its ID. The workspace is implicit in the API key, so a folder in another workspace answers as not found and existence does not leak.',
+					'Get a folder by its ID. A folder in another workspace answers as not found, so existence does not leak.',
 				routing: {
 					request: {
 						method: 'GET',
@@ -71,7 +71,7 @@ export const folderOperations: INodeProperties[] = [
 				name: 'Get Many',
 				value: 'getAll',
 				action: 'Get many folders',
-				description: 'List folders by path, by path prefix or by parent. Without a filter it lists root folders.',
+				description: 'List folders by path, path prefix or parent. Without a filter it lists root folders. Cursor paginated, never offset.',
 				routing: {
 					request: {
 						method: 'GET',
@@ -84,7 +84,7 @@ export const folderOperations: INodeProperties[] = [
 				name: 'Update',
 				value: 'update',
 				action: 'Update a folder',
-				description: 'Rename a folder in place or move it. A move takes the whole subtree and every ID in it survives, so IDs held elsewhere stay valid; the paths below it change.',
+				description: 'Rename a folder in place or move it. A move takes the whole subtree and every ID survives; the paths below it change.',
 				routing: {
 					request: {
 						method: 'PATCH',

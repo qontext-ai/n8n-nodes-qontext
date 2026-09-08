@@ -26,7 +26,7 @@ export const getManyFoldersOperation: INodeProperties[] = [
 				description: 'Lists folders directly inside this parent. Omit it to list root folders.',
 			},
 			{
-				name: 'Nothing',
+				name: 'None',
 				value: 'none',
 				description: 'List the folders at the root',
 			},
