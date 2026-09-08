@@ -109,7 +109,7 @@ export const createFileOperation: INodeProperties[] = [
 		name: 'content',
 		type: 'string',
 		default: '',
-		description: 'Markdown or plain text. Up to 51200 characters.',
+		description: 'Markdown or plain text',
 		required: true,
 		typeOptions: {
 			rows: 6,

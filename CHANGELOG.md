@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-09-08
 
 The Qontext API was rebuilt. This release replaces the node's entire operation set to
 match it.
@@ -52,7 +52,12 @@ stays at 1, so existing nodes pick up the new operation list on upgrade.
 - Upgraded `@n8n/node-cli` to 0.47, which brings the `@n8n/eslint-plugin-community-nodes`
   verification rules (42 of them) into the lint gate, and extended `npm run lint` to
   cover `package.json`. The previous 0.1.0 pin ran none of them.
+- Publishing now runs from the CLI's own workflow: triggered by a version tag, driven by
+  `npm run release`, and authenticated by OIDC when no `NPM_TOKEN` is set. CI moved to
+  Node 22, which a transitive dependency of the toolchain requires.
 - `package.json` description now matches what the node does.
+- Field descriptions follow the API reference wording, and no longer state the content
+  length limit, which the API reports in its own error.
 
 ## [0.1.5] - 2026-03-30
 

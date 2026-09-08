@@ -48,7 +48,7 @@ file is a conflict, so it never overwrites and never creates a duplicate.
 - **Create By**: `Path` (give the full absolute path) or `Parent Folder` (name an existing folder by ID)
 - **Path** (required with `Path`): absolute, ending in `.md` — e.g. `/support/policies/refunds.md`
 - **Parent Folder ID** + **File Name** (required with `Parent Folder`)
-- **Content** (required): markdown or plain text, up to 51200 characters
+- **Content** (required): markdown or plain text
 
 #### Get
 Fetches a single file by its ID. The ID is stable and survives a rename or a move. A
@@ -91,7 +91,7 @@ Replaces the entire content of a file.
 
 - **File ID** (required)
 - **Base Change ID** (required): the file's `lastChangeId` when your edit started
-- **Content** (required): the full new content, up to 51200 characters
+- **Content** (required): the full new content
 
 Qontext uses optimistic concurrency, so you must read the file before writing it —
 use **File → Get** first and pass its `lastChangeId` into **Base Change ID**:
@@ -204,7 +204,7 @@ code — the precise `detail` is in the node's error output, under `context.data
 | `folder_not_empty` | 409 | Delete a folder that still has contents; send Recursive |
 | `file_protected` | 409 | Delete a protected file; clear Protected first |
 | `pending_changes` | 409 | The file, or a file in the folder, has changes awaiting review |
-| `content_too_large` | 422 | Content is longer than 51200 characters |
+| `content_too_large` | 422 | Content is longer than the published limit |
 | `internal_error` | 500 | Unexpected failure, already reported |
 | `service_unavailable` | 503 | Temporarily unreachable — honour `Retry-After` |
 

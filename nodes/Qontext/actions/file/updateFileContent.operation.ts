@@ -47,7 +47,7 @@ export const updateFileContentOperation: INodeProperties[] = [
 		name: 'content',
 		type: 'string',
 		default: '',
-		description: 'The full new file content, which replaces the current content. Up to 51200 characters.',
+		description: 'The full new file content, which replaces the current content',
 		required: true,
 		typeOptions: {
 			rows: 6,
