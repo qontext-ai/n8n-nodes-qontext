@@ -1,13 +1,17 @@
 {
   "name": "@qontext/n8n-nodes-qontext",
   "version": "0.1.5",
-  "description": "Retrieve and ingest context to and from Qontext vaults",
+  "description": "Read, write and search your Qontext context repository",
   "license": "MIT",
   "homepage": "https://github.com/qontext-ai/n8n-nodes-qontext",
   "keywords": [
     "n8n-community-node-package"
   ],
-  "author": "Valeska Pachelbel <valeskapachelbel@gmail.com> (https://github.com/valeskaaa)",
+  "author": {
+    "name": "Valeska Pachelbel",
+    "email": "valeska@qontext.ai",
+    "url": "https://github.com/valeskaaa"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/qontext-ai/n8n-nodes-qontext.git"
@@ -16,8 +20,8 @@
     "build": "n8n-node build",
     "build:watch": "tsc --watch",
     "dev": "n8n-node dev",
-    "lint": "eslint credentials nodes",
-    "lint:fix": "eslint credentials nodes --fix",
+    "lint": "eslint credentials nodes package.json",
+    "lint:fix": "eslint credentials nodes package.json --fix",
     "release": "n8n-node release",
     "prepublishOnly": "npm run build && npm run lint"
   },
@@ -36,8 +40,9 @@
   },
   "main": "index.js",
   "devDependencies": {
-    "@n8n/node-cli": "^0.1.0",
-    "eslint": "9.32.0",
+    "@n8n/eslint-plugin-community-nodes": "^0.32.0",
+    "@n8n/node-cli": "^0.47.0",
+    "eslint": "^9.29.0",
     "eslint-import-resolver-typescript": "^4.4.3",
     "eslint-plugin-import-x": "^4.15.2",
     "eslint-plugin-n8n-nodes-base": "^1.16.6",
