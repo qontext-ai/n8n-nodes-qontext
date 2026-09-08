@@ -44,11 +44,6 @@ export const updateFileOperation: INodeProperties[] = [
 				description: 'Move the file into another folder, keeping its ID and its name',
 			},
 			{
-				name: 'Move to Root',
-				value: 'moveToRoot',
-				description: 'Move the file to the top level, keeping its ID and its name',
-			},
-			{
 				name: 'Rename',
 				value: 'rename',
 				description: 'Change the file name, leaving it where it is',
@@ -90,8 +85,7 @@ export const updateFileOperation: INodeProperties[] = [
 		default: '',
 		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
 		description:
-			'Folder to move this file into, keeping its ID and its name. Use the Move to Root action to move it to the top level.',
-		required: true,
+			'Folder to move this file into, keeping its ID and its name. Leave empty to move it to the root.',
 		displayOptions: {
 			show: {
 				resource: ['file'],
@@ -103,7 +97,7 @@ export const updateFileOperation: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'folderId',
-				value: '={{$value}}',
+				value: '={{$value || null}}',
 			},
 		},
 	},
@@ -126,26 +120,6 @@ export const updateFileOperation: INodeProperties[] = [
 				type: 'body',
 				property: 'protected',
 				value: '={{$value}}',
-			},
-		},
-	},
-	{
-		displayName: 'Moving to Root',
-		name: 'moveToRootNotice',
-		type: 'hidden',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['file'],
-				operation: ['update'],
-				updateBy: ['moveToRoot'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				property: 'folderId',
-				value: '={{null}}',
 			},
 		},
 	},

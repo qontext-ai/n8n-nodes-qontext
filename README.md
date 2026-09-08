@@ -72,7 +72,8 @@ file's ID never changes, so IDs held elsewhere stay valid; the path does change.
 
 - **File ID** (required)
 - **Action**: `Rename` (then **Name**, including the `.md` extension), `Move` (then
-  **New Folder ID**), `Move to Root`, or `Set Protected` (then **Protected**)
+  **New Folder ID**, left empty to move it to the root), or `Set Protected` (then
+  **Protected**)
 
 Note the asymmetry with folders: a file moves via **New Folder ID**, a folder via
 **New Parent Folder ID**.
@@ -149,9 +150,8 @@ Renames a folder in place or moves it. A move takes the whole subtree and every 
 it survives, so IDs held elsewhere stay valid — only the paths below it change.
 
 - **Folder ID** (required)
-- **Action**: `Rename` (then **Name**), `Move` (then **New Parent Folder ID**) or
-  `Move to Root`. Moving to the top level is its own action rather than an empty field,
-  so a half-configured node cannot relocate a subtree by accident.
+- **Action**: `Rename` (then **Name**) or `Move` (then **New Parent Folder ID**, left
+  empty to move it to the root)
 
 #### Delete
 Deletes a folder and outputs `{ "success": true }`.

@@ -42,11 +42,6 @@ export const updateFolderOperation: INodeProperties[] = [
 				description: 'Move the folder into another folder, taking its whole subtree and keeping every ID',
 			},
 			{
-				name: 'Move to Root',
-				value: 'moveToRoot',
-				description: 'Move the folder to the top level, taking its whole subtree and keeping every ID',
-			},
-			{
 				name: 'Rename',
 				value: 'rename',
 				description: 'Change the leaf name, leaving the folder where it is',
@@ -83,8 +78,7 @@ export const updateFolderOperation: INodeProperties[] = [
 		default: '',
 		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
 		description:
-			'Folder to move this one into, taking its whole subtree and keeping every ID. The paths below it change, but the IDs do not. Use the Move to Root action to move it to the top level.',
-		required: true,
+			'Folder to move this one into, taking its whole subtree and keeping every ID. The paths below it change, but the IDs do not. Leave empty to move it to the root.',
 		displayOptions: {
 			show: {
 				resource: ['folder'],
@@ -96,27 +90,7 @@ export const updateFolderOperation: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'parentId',
-				value: '={{$value}}',
-			},
-		},
-	},
-	{
-		displayName: 'Moving to Root',
-		name: 'moveToRootNotice',
-		type: 'hidden',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['folder'],
-				operation: ['update'],
-				updateBy: ['moveToRoot'],
-			},
-		},
-		routing: {
-			send: {
-				type: 'body',
-				property: 'parentId',
-				value: '={{null}}',
+				value: '={{$value || null}}',
 			},
 		},
 	},

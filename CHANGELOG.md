@@ -39,9 +39,6 @@ stays at 1, so existing nodes pick up the new operation list on upgrade.
   back a cursor; it now also requires the cursor.
 - The list filters were a collection that let two mutually exclusive filters be sent
   together, which the API rejects. They are now one **Filter By** choice.
-- Moving to the root was expressed by leaving the target folder empty, so a
-  half-configured node could relocate a subtree. It is now an explicit **Move to Root**
-  action and the target field is required.
 - IDs are URL-encoded before being placed in a request path.
 - Domain and API Key are marked required on the credential.
 - A node left on a resource removed in this release now stops with an explanation
