@@ -21,12 +21,15 @@ export class QontextApi implements ICredentialType {
 			name: 'domain',
 			type: 'string',
 			default: 'https://api.qontext.ai',
+			required: true,
+			description: 'Base URL of the Qontext API. Use https://api.staging.qontext.ai for staging.',
 		},
 		{
 			displayName: 'API Key',
 			name: 'xApiKey',
 			type: 'string',
 			default: '',
+			required: true,
 			typeOptions: {
 				password: true,
 			}

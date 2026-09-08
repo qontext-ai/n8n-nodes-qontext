@@ -1,6 +1,8 @@
 import { NodeConnectionTypes, type INodeType, type INodeTypeDescription } from 'n8n-workflow';
-import { ingestionOperations } from './actions/ingestion/ingestion.resource';
-import { retrievalOperations } from './actions/retrieval/retrieval.resource';
+import { legacyResourceGuard } from './actions/common/legacy';
+import { fileOperations } from './actions/file/file.resource';
+import { folderOperations } from './actions/folder/folder.resource';
+import { searchOperations } from './actions/search/search.resource';
 
 export class Qontext implements INodeType {
 	description: INodeTypeDescription = {
@@ -12,7 +14,7 @@ export class Qontext implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] || "Select operation"}}: {{$parameter["resource"] || "Select resource"}}',
-		description: 'Ingest and retrieve company context with the Qontext API',
+		description: 'Read, write and search your Qontext context repository',
 		defaults: {
 			name: 'Qontext',
 		},
@@ -35,13 +37,16 @@ export class Qontext implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: [
-					{ name: 'Ingestion', value: 'ingestion' },
-					{ name: 'Retrieval', value: 'retrieval' },
+					{ name: 'File', value: 'file' },
+					{ name: 'Folder', value: 'folder' },
+					{ name: 'Search', value: 'search' },
 				],
-				default: 'retrieval',
+				default: 'file',
 			},
-			...ingestionOperations,
-			...retrievalOperations,
+			...legacyResourceGuard,
+			...fileOperations,
+			...folderOperations,
+			...searchOperations,
 		],
 	};
 }

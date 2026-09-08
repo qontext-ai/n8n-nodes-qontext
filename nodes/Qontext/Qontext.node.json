@@ -1,17 +1,17 @@
 {
-	"node": "n8n-nodes-base.Qontext",
+	"node": "@qontext/n8n-nodes-qontext.qontext",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Development", "Data & Storage", "Productivity"],
 	"resources": {
 		"credentialDocumentation": [
 			{
-				"url": "https://docs.qontext.ai/get_started"
+				"url": "https://docs.qontext.ai/get-started"
 			}
 		],
 		"primaryDocumentation": [
 			{
-				"url": "https://docs.qontext.ai/get_started"
+				"url": "https://docs.qontext.ai/get-started"
 			}
 		]
 	}
