@@ -249,8 +249,8 @@ To use the Qontext node, you need to set up Qontext API credentials.
 2. Search for **Qontext API**
 3. Enter:
    - **API Key**: your Qontext API key (masked for security)
-   - **Domain**: the API base URL (default `https://api.qontext.ai`, or
-     `https://api.staging.qontext.ai` for staging)
+   - **Domain**: the API base URL. Leave the default (`https://api.qontext.ai`) unless
+     you have been given a different host.
 
 The credentials are validated when you save them.
 
@@ -259,13 +259,6 @@ The credentials are validated when you save them.
 - **Minimum n8n version**: compatible with n8n versions that support community nodes
 - **API version**: Qontext API v1
 - **Node API version**: 1
-
-> **Endpoint availability.** The Files, Folders and Search endpoints are part of the
-> rebuilt Qontext API. At the time of the 0.2.0 release, production
-> (`https://api.qontext.ai`) serves only **File → Get** and **File → Get Many**;
-> everything else is available on staging (`https://api.staging.qontext.ai`) and reaches
-> production as the rollout completes. Point the credential's **Domain** at staging if an
-> operation answers 404.
 
 ## Usage
 

@@ -22,7 +22,7 @@ export class QontextApi implements ICredentialType {
 			type: 'string',
 			default: 'https://api.qontext.ai',
 			required: true,
-			description: 'Base URL of the Qontext API. Use https://api.staging.qontext.ai for staging.',
+			description: 'Base URL of the Qontext API. Leave the default unless you have been given a different host.',
 		},
 		{
 			displayName: 'API Key',

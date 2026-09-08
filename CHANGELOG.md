@@ -54,11 +54,6 @@ stays at 1, so existing nodes pick up the new operation list on upgrade.
   cover `package.json`. The previous 0.1.0 pin ran none of them.
 - `package.json` description now matches what the node does.
 
-### Note
-At release time the production API serves only File > Get and File > Get Many; the rest
-of the endpoints are live on staging and roll out to production shortly. See the
-Compatibility section of the README.
-
 ## [0.1.5] - 2026-03-30
 
 ### Fixed
