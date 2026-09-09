@@ -2,6 +2,7 @@
 // We do that by adding `operation: ["create"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { folderLocator, rootAware } from '../common/locator';
 
 // Either `path` or `parentId` + `name`, never a mix. Each field carries its own
 // `routing.send` and is gated on the Create By selector, so a hidden field
@@ -57,28 +58,15 @@ export const createFolderOperation: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'Parent Folder ID',
-		name: 'parentId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
-		description: 'Folder to create this one inside. Send with Name instead of Path. Leave empty to put it at the root.',
+	folderLocator('parentId', 'Parent Folder ID', {
+		description: 'Parent folder. Send with Name instead of Path. Pick "/ (Root)" to create it at the root.',
+		required: true,
+		includeRoot: true,
 		displayOptions: {
-			show: {
-				resource: ['folder'],
-				operation: ['create'],
-				createBy: ['parentFolder'],
-			},
+			show: { resource: ['folder'], operation: ['create'], createBy: ['parentFolder'] },
 		},
-		routing: {
-			send: {
-				type: 'body',
-				property: 'parentId',
-				value: '={{$value || null}}',
-			},
-		},
-	},
+		routing: rootAware('parentId'),
+	}),
 	{
 		displayName: 'Name',
 		name: 'name',

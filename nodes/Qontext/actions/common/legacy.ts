@@ -3,7 +3,7 @@ import { NodeOperationError, type IExecuteSingleFunctions, type IHttpRequestOpti
 // Resources removed in 0.2.0 when the Qontext API was rebuilt. A workflow saved against
 // an older version still holds one of these values, and nothing in the current property
 // set matches it, so no operation contributes a URL or a method. Left alone the node
-// sends a bare request to the credential domain and reports `Cannot GET /`, which says
+// sends a bare request to the credential base URL and reports `Cannot GET /`, which says
 // nothing about what went wrong. These entries match the stale value and stop the
 // request with an explanation instead.
 const REMOVED: Record<string, string> = {

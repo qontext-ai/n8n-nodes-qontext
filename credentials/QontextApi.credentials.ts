@@ -17,8 +17,8 @@ export class QontextApi implements ICredentialType {
 	} as const;
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Domain',
-			name: 'domain',
+			displayName: 'Base URL',
+			name: 'baseUrl',
 			type: 'string',
 			default: 'https://api.qontext.ai',
 			required: true,
@@ -48,7 +48,7 @@ export class QontextApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			method: 'POST', // Required for validate-key
-			baseURL: '={{$credentials?.domain}}',
+			baseURL: '={{$credentials?.baseUrl}}',
 			url: '/auth/validate-key',
 			headers: {
 				'X-API-Key': '={{$credentials?.xApiKey}}',

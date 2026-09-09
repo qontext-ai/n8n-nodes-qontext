@@ -20,6 +20,7 @@ file and write one back as part of its own reasoning.
 
 - [Installation](#installation)
 - [Operations](#operations)
+  - [Choosing a File or Folder](#choosing-a-file-or-folder)
   - [File](#file)
   - [Folder](#folder)
   - [Search](#search)
@@ -39,6 +40,32 @@ The node has three resources: **File**, **Folder** and **Search**. The workspace
 context repository you are working in is implicit in your API key, so no workspace ID is
 ever needed in a request.
 
+### Choosing a file or folder
+
+Every ID field offers more than one way to name what you mean:
+
+| Mode | What you give it | Notes |
+|---|---|---|
+| **By ID** | `doc_…` / `dir_…` | The default, except on the fields that accept the root. Checked against the ID shape as you type, so a wrong prefix is an error in the editor rather than a `400 invalid_id` at run time. The bare `doc_…` form only — the API rejects the composite version id `doc_…-cmit_…` on every file endpoint. |
+| **From List** | pick from a dropdown of paths | Lists the whole tree and stores the ID, so a later rename or move does not break the workflow. |
+| **By Path** | `/support/policies/refunds.md` | Only on fields that name the *subject* of the operation. Costs one extra request per item to turn the path into an ID. |
+
+**By Path** is deliberately absent from the fields that merely *reference* a folder — the
+two Create operations and the two Get Many filters — because each already has a path
+route of its own: Create takes a full **Path**, and Get Many has a **Path Prefix** filter.
+
+Where the root is a legal answer — creating a folder at the top level, or moving an item
+to the root — the dropdown offers **/ (Root)** as its first entry. The root has no ID and
+no addressable path, so the list is the only place it can be named, and those fields open
+on **From List** rather than **By ID** for that reason. Picking the root is an answer like
+any other: the field is required, so a move never falls back to the top level because it
+was left alone.
+
+One limitation worth knowing: the API has no text search over paths, so typing in the
+**From List** box filters the page already loaded rather than querying the server. On a
+large repository a filter can miss a match further down. **By ID** and **By Path** are
+always exact.
+
 ### File
 
 #### Create
@@ -51,15 +78,22 @@ file is a conflict, so it never overwrites and never creates a duplicate.
 - **Content** (required): markdown or plain text
 
 #### Get
-Fetches a single file by its ID. The ID is stable and survives a rename or a move. A
-file in another workspace answers as not found, so existence does not leak.
+Fetches a single file by its ID, with its full text. The ID is stable and survives a
+rename or a move. A file in another workspace answers as not found, so existence does
+not leak.
+
+`content` and `lastChangeId` are read off the same stored revision, so together they are
+everything **Update Content** needs for the next write: the base you get back is the base
+the text belongs to. The other operations answer the file *without* its content — Create
+projects what it just wrote, and Update answers from the write — so `File` and
+`FileWithContent` are separate shapes, and only the read by ID carries the text.
 
 - **File ID** (required)
 
 #### Get Many
 Lists files. See [Pagination](#pagination).
 
-- **Filter By**: `Nothing` (every file the key can read), `Path` (exact path, ending in
+- **Filter By**: `None` (every file the key can read), `Path` (exact path, ending in
   `.md`, returns zero or one file), `Path Prefix` (every file below a folder,
   recursively) or `Folder ID` (files directly inside a folder, one level only). Only one
   filter can be used — the API rejects a request carrying two.
@@ -72,8 +106,8 @@ file's ID never changes, so IDs held elsewhere stay valid; the path does change.
 
 - **File ID** (required)
 - **Action**: `Rename` (then **Name**, including the `.md` extension), `Move` (then
-  **New Folder ID**, left empty to move it to the root), or `Set Protected` (then
-  **Protected**)
+  **New Folder ID**, choosing `/ (Root)` to move it to the root), or `Set Protected`
+  (then **Protected**)
 
 Note the asymmetry with folders: a file moves via **New Folder ID**, a folder via
 **New Parent Folder ID**.
@@ -94,11 +128,13 @@ Replaces the entire content of a file.
 - **Content** (required): the full new content
 
 Qontext uses optimistic concurrency, so you must read the file before writing it —
-use **File → Get** first and pass its `lastChangeId` into **Base Change ID**:
+use **File → Get** first and pass its `lastChangeId` into **Base Change ID**. The same
+Get also returns the current `content`, so the text you are revising and the base you
+send with it come from one request:
 
 ```
-Qontext (File → Get)  →  Qontext (File → Update Content)
-                              Base Change ID: {{ $json.lastChangeId }}
+Qontext (File → Get)  →  edit {{ $json.content }}  →  Qontext (File → Update Content)
+                                                          Base Change ID: {{ $json.lastChangeId }}
 ```
 
 If the file changed in the meantime, the edit is merged where possible. The response's
@@ -115,7 +151,7 @@ editing the file again.
 > | outcome | output |
 > |---|---|
 > | landed | `{ "object": "edit", "file": { … }, "content": "…" }` |
-> | blocked | `{ "object": "change", "status": "blocked", "reason": "protected" \| "conflict", "fileIds": [ … ] }` |
+> | blocked | `{ "object": "change", "id": "chg_…", "status": "blocked", "reason": "protected" \| "conflict", "fileIds": [ … ] }` |
 >
 > A blocked result has **no `file` key**, so a downstream node reading
 > `{{ $json.file.lastChangeId }}` breaks. Branch on `{{ $json.object }}` (an IF node
@@ -132,7 +168,7 @@ Creates one folder. Like files, this is not an upsert; an occupied path is a con
 
 - **Create By**: `Path` (missing parents are created on the way) or `Parent Folder`
 - **Path** (required with `Path`) — e.g. `/projects/reports`
-- **Parent Folder ID** (leave empty for the root) + **Name** (required with `Parent Folder`)
+- **Parent Folder ID** (choose `/ (Root)` for the top level) + **Name** (required with `Parent Folder`)
 
 #### Get
 Fetches a single folder by its ID.
@@ -142,7 +178,7 @@ Fetches a single folder by its ID.
 #### Get Many
 Lists folders. Without a filter it lists root folders. See [Pagination](#pagination).
 
-- **Filter By**: `Nothing` (root folders), `Path`, `Path Prefix` or `Parent Folder ID`.
+- **Filter By**: `None` (root folders), `Path`, `Path Prefix` or `Parent Folder ID`.
   One only, for the same reason as files.
 
 #### Update
@@ -150,8 +186,8 @@ Renames a folder in place or moves it. A move takes the whole subtree and every 
 it survives, so IDs held elsewhere stay valid — only the paths below it change.
 
 - **Folder ID** (required)
-- **Action**: `Rename` (then **Name**) or `Move` (then **New Parent Folder ID**, left
-  empty to move it to the root)
+- **Action**: `Rename` (then **Name**) or `Move` (then **New Parent Folder ID**,
+  choosing `/ (Root)` to move it to the root)
 
 #### Delete
 Deletes a folder and outputs `{ "success": true }`.
@@ -199,7 +235,7 @@ code — the precise `detail` is in the node's error output, under `context.data
 | `invalid_base_change` | 400 | Base Change ID names no change of this file |
 | `unauthenticated` | 401 | Missing or invalid API key |
 | `forbidden` | 403 | The key may not perform this write |
-| `file_not_found` / `folder_not_found` | 404 | No such item readable with this key. A item in another workspace answers the same way, so existence does not leak |
+| `file_not_found` / `folder_not_found` | 404 | No such item readable with this key. An item in another workspace answers the same way, so existence does not leak |
 | `path_already_exists` | 409 | Something is already at that path — Create is never an upsert |
 | `folder_not_empty` | 409 | Delete a folder that still has contents; send Recursive |
 | `file_protected` | 409 | Delete a protected file; clear Protected first |
@@ -249,8 +285,8 @@ To use the Qontext node, you need to set up Qontext API credentials.
 2. Search for **Qontext API**
 3. Enter:
    - **API Key**: your Qontext API key (masked for security)
-   - **Domain**: the API base URL. Leave the default (`https://api.qontext.ai`) unless
-     you have been given a different host.
+   - **Base URL**: the Qontext API base URL. Leave the default (`https://api.qontext.ai`)
+     unless you have been given a different host.
 
 The credentials are validated when you save them.
 

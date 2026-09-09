@@ -2,21 +2,14 @@
 // We do that by adding `operation: ["get"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { fileLocator } from '../common/locator';
 
 export const getFileOperation: INodeProperties[] = [
-	{
-		displayName: 'File ID',
-		name: 'fileId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. doc_9f2k1x8b3m7q0v',
-		description: 'ID of the file. Stable: it survives a rename or a move.',
+	fileLocator('fileId', 'File ID', {
+		description:
+			'The file to read. Its ID is stable: it survives a rename or a move. The response carries the file content and the lastChangeId it belongs to, which is what Update Content takes as its Base Change ID.',
 		required: true,
-		displayOptions: {
-			show: {
-				resource: ['file'],
-				operation: ['get'],
-			},
-		},
-	},
+		byPath: true,
+		displayOptions: { show: { resource: ['file'], operation: ['get'] } },
+	}),
 ];

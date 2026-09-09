@@ -2,10 +2,11 @@
 // We do that by adding `operation: ["getAll"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { folderLocator } from '../common/locator';
 import { listProperties } from '../common/pagination';
 
 export const getManyFoldersOperation: INodeProperties[] = [
-	...listProperties('folder', 'getAll'),
+	...listProperties('folder', 'getAll', ['none', 'pathPrefix', 'parentId']),
 	{
 		displayName: 'Filter By',
 		name: 'filterBy',
@@ -23,7 +24,7 @@ export const getManyFoldersOperation: INodeProperties[] = [
 			{
 				name: 'Parent Folder ID',
 				value: 'parentId',
-				description: 'Lists folders directly inside this parent. Omit it to list root folders.',
+				description: 'Folders directly inside this parent, one level only. Use Path Prefix for a whole subtree, or the None filter to list the root.',
 			},
 			{
 				name: 'None',
@@ -88,20 +89,11 @@ export const getManyFoldersOperation: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'Parent Folder ID',
-		name: 'parentId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
-		description: 'Lists folders directly inside this parent. Omit it to list root folders.',
+	folderLocator('parentId', 'Parent Folder ID', {
+		description: 'Folders directly inside this parent, one level only. Use Path Prefix for a whole subtree, or the None filter to list the root.',
 		required: true,
 		displayOptions: {
-			show: {
-				resource: ['folder'],
-				operation: ['getAll'],
-				filterBy: ['parentId'],
-			},
+			show: { resource: ['folder'], operation: ['getAll'], filterBy: ['parentId'] },
 		},
 		routing: {
 			send: {
@@ -110,5 +102,5 @@ export const getManyFoldersOperation: INodeProperties[] = [
 				value: '={{$value}}',
 			},
 		},
-	},
+	}),
 ];

@@ -2,6 +2,7 @@
 // We do that by adding `operation: ["update"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { fileLocator, folderLocator, rootAware } from '../common/locator';
 
 // The endpoint takes exactly one of `name`, `folderId` or `protected`. Sending two is
 // rejected rather than ordered, because they are separate writes with no transaction
@@ -9,21 +10,12 @@ import type { INodeProperties } from 'n8n-workflow';
 // way to say which. The Action selector gates which field is visible, and a hidden
 // field contributes nothing to the body.
 export const updateFileOperation: INodeProperties[] = [
-	{
-		displayName: 'File ID',
-		name: 'fileId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. doc_9f2k1x8b3m7q0v',
-		description: 'ID of the file to change. The ID never changes, only the path does.',
+	fileLocator('fileId', 'File ID', {
+		description: 'The file to change. Its ID never changes, only the path does.',
 		required: true,
-		displayOptions: {
-			show: {
-				resource: ['file'],
-				operation: ['update'],
-			},
-		},
-	},
+		byPath: true,
+		displayOptions: { show: { resource: ['file'], operation: ['update'] } },
+	}),
 	{
 		displayName: 'Action',
 		name: 'updateBy',
@@ -78,29 +70,16 @@ export const updateFileOperation: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'New Folder ID',
-		name: 'folderId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
+	folderLocator('folderId', 'New Folder ID', {
 		description:
-			'Folder to move this file into, keeping its ID and its name. Leave empty to move it to the root.',
+			'Folder to move this file into, keeping its ID and its name. Pick "/ (Root)" to move it to the root.',
+		required: true,
+		includeRoot: true,
 		displayOptions: {
-			show: {
-				resource: ['file'],
-				operation: ['update'],
-				updateBy: ['move'],
-			},
+			show: { resource: ['file'], operation: ['update'], updateBy: ['move'] },
 		},
-		routing: {
-			send: {
-				type: 'body',
-				property: 'folderId',
-				value: '={{$value || null}}',
-			},
-		},
-	},
+		routing: rootAware('folderId'),
+	}),
 	{
 		displayName: 'Protected',
 		name: 'protected',

@@ -2,6 +2,7 @@
 // We do that by adding `operation: ["create"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { folderLocator } from '../common/locator';
 
 // The endpoint takes either `path` or `parentId` + `fileName`, never a mix. Each
 // field carries its own `routing.send` and is gated on the Create By selector, so
@@ -58,20 +59,11 @@ export const createFileOperation: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'Parent Folder ID',
-		name: 'parentId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
-		description: 'Parent folder ID. Send with File Name instead of Path.',
+	folderLocator('parentId', 'Parent Folder ID', {
+		description: 'Parent folder. Send with File Name instead of Path.',
 		required: true,
 		displayOptions: {
-			show: {
-				resource: ['file'],
-				operation: ['create'],
-				createBy: ['parentFolder'],
-			},
+			show: { resource: ['file'], operation: ['create'], createBy: ['parentFolder'] },
 		},
 		routing: {
 			send: {
@@ -80,7 +72,7 @@ export const createFileOperation: INodeProperties[] = [
 				value: '={{$value}}',
 			},
 		},
-	},
+	}),
 	{
 		displayName: 'File Name',
 		name: 'fileName',
@@ -110,6 +102,8 @@ export const createFileOperation: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description: 'Markdown or plain text',
+		// No number: a second copy of the cap would go stale, and the 422 states the real one.
+		hint: 'A very long document is rejected with content_too_large, which reports the current limit',
 		required: true,
 		typeOptions: {
 			rows: 6,

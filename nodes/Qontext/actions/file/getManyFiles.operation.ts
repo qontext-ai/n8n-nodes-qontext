@@ -2,10 +2,11 @@
 // We do that by adding `operation: ["getAll"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { folderLocator } from '../common/locator';
 import { listProperties } from '../common/pagination';
 
 export const getManyFilesOperation: INodeProperties[] = [
-	...listProperties('file', 'getAll'),
+	...listProperties('file', 'getAll', ['none', 'pathPrefix', 'folderId']),
 	{
 		displayName: 'Filter By',
 		name: 'filterBy',
@@ -88,20 +89,12 @@ export const getManyFilesOperation: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'Folder ID',
-		name: 'folderId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
-		description: 'Files directly inside this folder, one level only. Use Path Prefix for a whole subtree. A folder ID naming nothing is an empty collection.',
+	folderLocator('folderId', 'Folder ID', {
+		description:
+			'Files directly inside this folder, one level only. Use Path Prefix for a whole subtree. A folder naming nothing is an empty collection.',
 		required: true,
 		displayOptions: {
-			show: {
-				resource: ['file'],
-				operation: ['getAll'],
-				filterBy: ['folderId'],
-			},
+			show: { resource: ['file'], operation: ['getAll'], filterBy: ['folderId'] },
 		},
 		routing: {
 			send: {
@@ -110,5 +103,5 @@ export const getManyFilesOperation: INodeProperties[] = [
 				value: '={{$value}}',
 			},
 		},
-	},
+	}),
 ];

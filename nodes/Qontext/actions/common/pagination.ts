@@ -7,7 +7,16 @@ import type { INodeProperties, INodePropertyRouting } from 'n8n-workflow';
 // does not mean the end: items the key may not read are dropped after the page is
 // read, so `hasMore` is the only correct stop condition, never the item count.
 
-export function listProperties(resource: string, operation: string): INodeProperties[] {
+// `cursorFilters` names the Filter By values that may carry a cursor. The API makes
+// `path` mutually exclusive with `cursor` — it addresses at most one item, so its single
+// page issues no cursor and one sent with it was invented or copied from another query.
+// The other selectors page normally, so each caller passes its own list rather than the
+// rule being restated here.
+export function listProperties(
+	resource: string,
+	operation: string,
+	cursorFilters: string[],
+): INodeProperties[] {
 	const show = { resource: [resource], operation: [operation] };
 
 	return [
@@ -55,14 +64,16 @@ export function listProperties(resource: string, operation: string): INodeProper
 			placeholder: 'e.g. c_9f2k1x8b3m7q0v',
 			description:
 				'A nextCursor from an earlier page. Opaque: echo it back, never construct one. Changing a filter invalidates it, so start again from the first page.',
-			displayOptions: { show: { ...show, returnAll: [false] } },
+			displayOptions: {
+				show: { ...show, returnAll: [false], filterBy: cursorFilters },
+			},
 			routing: {
 				send: {
 					type: 'query',
 					property: 'cursor',
-					// Empty must not be sent at all: the API rejects a cursor combined with an
-					// exact `path` filter, and an unset field would otherwise send `cursor=`.
-					// Recursive `path_prefix` paging alongside a cursor is fine.
+					// The filter this cannot combine with is gated above, so what is left here
+					// is the empty field: unset it would send `cursor=`, which is not a cursor
+					// this API issued and is rejected as malformed rather than read as absent.
 					value: '={{ $value || undefined }}',
 				},
 			},

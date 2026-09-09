@@ -2,26 +2,18 @@
 // We do that by adding `operation: ["update"]` to `displayOptions.show`
 
 import type { INodeProperties } from 'n8n-workflow';
+import { folderLocator, rootAware } from '../common/locator';
 
 // The endpoint takes exactly one of `name` or `parentId`. Sending both, or
 // neither, is rejected rather than resolved by a precedence rule, so the Action
 // selector gates which field is visible and therefore which one is sent.
 export const updateFolderOperation: INodeProperties[] = [
-	{
-		displayName: 'Folder ID',
-		name: 'folderId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
-		description: 'ID of the folder to rename or move',
+	folderLocator('folderId', 'Folder ID', {
+		description: 'The folder to change. A move takes the whole subtree with it and every ID in it survives.',
 		required: true,
-		displayOptions: {
-			show: {
-				resource: ['folder'],
-				operation: ['update'],
-			},
-		},
-	},
+		byPath: true,
+		displayOptions: { show: { resource: ['folder'], operation: ['update'] } },
+	}),
 	{
 		displayName: 'Action',
 		name: 'updateBy',
@@ -71,27 +63,14 @@ export const updateFolderOperation: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'New Parent Folder ID',
-		name: 'parentId',
-		type: 'string',
-		default: '',
-		placeholder: 'e.g. dir_9f2k1x8b3m7q0v',
+	folderLocator('parentId', 'New Parent Folder ID', {
 		description:
-			'Folder to move this one into, taking its whole subtree and keeping every ID. The paths below it change, but the IDs do not. Leave empty to move it to the root.',
+			'Folder to move this folder into, with everything below it. Pick "/ (Root)" to move it to the root.',
+		required: true,
+		includeRoot: true,
 		displayOptions: {
-			show: {
-				resource: ['folder'],
-				operation: ['update'],
-				updateBy: ['move'],
-			},
+			show: { resource: ['folder'], operation: ['update'], updateBy: ['move'] },
 		},
-		routing: {
-			send: {
-				type: 'body',
-				property: 'parentId',
-				value: '={{$value || null}}',
-			},
-		},
-	},
+		routing: rootAware('parentId'),
+	}),
 ];

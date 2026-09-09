@@ -61,7 +61,7 @@ export const fileOperations: INodeProperties[] = [
 				value: 'get',
 				action: 'Get a file',
 				description:
-					'Get a file by its ID. A file in another workspace answers as not found, so existence does not leak.',
+					'Get a file by its ID, with its full content. A file in another workspace answers as not found, so existence does not leak.',
 				routing: {
 					request: {
 						method: 'GET',
