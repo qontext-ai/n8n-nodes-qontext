@@ -262,7 +262,7 @@ dropped after the page is read, so `hasMore` is the only reliable signal.
 
 ## Upgrading from 0.1.x
 
-0.2.0 replaces the entire operation set, because the endpoints the previous operations
+1.0.0 replaces the entire operation set, because the endpoints the previous operations
 called no longer exist. Workflows built on 0.1.x need their Qontext nodes reconfigured
 against the File, Folder and Search resources above.
 
