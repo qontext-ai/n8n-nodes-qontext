@@ -33,10 +33,9 @@ export const searchHybridOperation: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
-		// The API defaults to 10 here, which is a sensible number of search results;
-		// the rule wants n8n's usual 50.
-		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
-		default: 10,
+		// n8n's standard Limit default, and the one the list operations already use. The
+		// API's own default is 10, so the field is always sent rather than left off.
+		default: 50,
 		description: 'Max number of results to return',
 		typeOptions: {
 			minValue: 1,

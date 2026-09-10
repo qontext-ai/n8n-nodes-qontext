@@ -42,30 +42,34 @@ export const rootAware = (property: string): INodePropertyRouting => ({
 	},
 });
 
+// n8n's `node-param-default-missing` reads a locator mode as a node parameter and asks
+// for a `default` on it. INodePropertyMode has no such field, and n8n ignores one here —
+// the locator's own `default` below is what the editor reads — so the type is widened to
+// carry the key. Added at n8n's request in the 1.0.0 community-package review, which
+// lints the source with inline configuration off and so never saw the suppression
+// comments that used to stand in these three builders.
+type ModeWithDefault = INodePropertyMode & { default: string };
+
 // `By ID` is first, so it is the default mode. That keeps the node's AI-tool surface a
 // plain id string: an agent filling this parameter supplies what it read from an earlier
 // response, and never has to know the locator's shape.
-function idMode(regex: string, placeholder: string, errorMessage: string): INodePropertyMode {
-	// A locator mode is not a node parameter; INodePropertyMode has no `default` to add,
-	// so the rule below misfires on the object literal.
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+function idMode(regex: string, placeholder: string, errorMessage: string): ModeWithDefault {
 	return {
 		displayName: 'By ID',
 		name: 'id',
 		type: 'string',
+		default: '',
 		placeholder,
 		validation: [{ type: 'regex', properties: { regex, errorMessage } }],
 	};
 }
 
-function listMode(searchListMethod: string, placeholder: string): INodePropertyMode {
-	// A locator mode is not a node parameter; INodePropertyMode has no `default` to add,
-	// so the rule below misfires on the object literal.
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+function listMode(searchListMethod: string, placeholder: string): ModeWithDefault {
 	return {
 		displayName: 'From List',
 		name: 'list',
 		type: 'list',
+		default: '',
 		placeholder,
 		typeOptions: {
 			searchListMethod,
@@ -76,14 +80,12 @@ function listMode(searchListMethod: string, placeholder: string): INodePropertyM
 	};
 }
 
-function pathMode(regex: string, placeholder: string, errorMessage: string): INodePropertyMode {
-	// A locator mode is not a node parameter; INodePropertyMode has no `default` to add,
-	// so the rule below misfires on the object literal.
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+function pathMode(regex: string, placeholder: string, errorMessage: string): ModeWithDefault {
 	return {
 		displayName: 'By Path',
 		name: 'path',
 		type: 'string',
+		default: '',
 		placeholder,
 		validation: [{ type: 'regex', properties: { regex, errorMessage } }],
 	};

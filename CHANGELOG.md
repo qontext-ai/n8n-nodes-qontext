@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-09-10
+
+Review feedback from n8n on 1.0.0. The node's parameters are unchanged apart from the
+two Limit defaults.
+
+### Changed
+- **Search > By Meaning** and **Search > By Regex** now default **Limit** to 50, n8n's
+  standard and the same default the Get Many operations already used. Workflows saved on
+  1.0.0 keep the limit they stored.
+- Every resource locator mode now carries `default: ''`. `node-param-default-missing`
+  reads a mode as a node parameter and asks for a default; n8n ignores one here, and the
+  locator's own default is unchanged, so this is a lint fix with no effect on the field.
+  The community-package scan lints the source with inline configuration off, so the
+  `eslint-disable` comments that used to stand in these builders did not reach it.
+
 ## [1.0.0] - 2026-09-10
 
 The Qontext API was rebuilt. This release replaces the node's entire operation set to
