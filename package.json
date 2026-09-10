@@ -1,6 +1,6 @@
 {
   "name": "@qontext/n8n-nodes-qontext",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Read, write and search your Qontext context repository",
   "license": "MIT",
   "homepage": "https://github.com/qontext-ai/n8n-nodes-qontext",
