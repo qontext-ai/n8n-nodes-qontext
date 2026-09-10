@@ -33,3 +33,6 @@ yarn-error.log*
 # Testing
 coverage/
 .nyc_output/
+
+# Written by the release hook; CHANGELOG.md is the hand-written one
+CHANGELOG.generated.md

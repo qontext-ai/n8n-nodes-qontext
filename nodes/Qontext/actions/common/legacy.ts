@@ -1,6 +1,6 @@
 import { NodeOperationError, type IExecuteSingleFunctions, type IHttpRequestOptions, type INodeProperties } from 'n8n-workflow';
 
-// Resources removed in 0.2.0 when the Qontext API was rebuilt. A workflow saved against
+// Resources removed in 1.0.0 when the Qontext API was rebuilt. A workflow saved against
 // an older version still holds one of these values, and nothing in the current property
 // set matches it, so no operation contributes a URL or a method. Left alone the node
 // sends a bare request to the credential base URL and reports `Cannot GET /`, which says
@@ -22,7 +22,7 @@ async function refuseRemovedResource(this: IExecuteSingleFunctions): Promise<IHt
 export const legacyResourceGuard: INodeProperties[] = [
 	{
 		displayName:
-			'This node is set to a resource that was removed in version 0.2.0. Pick File, Folder or Search, then set the operation and its fields again.',
+			'This node is set to a resource that was removed in version 1.0.0. Pick File, Folder or Search, then set the operation and its fields again.',
 		name: 'legacyNotice',
 		type: 'notice',
 		default: '',

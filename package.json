@@ -28,6 +28,10 @@
   "files": [
     "dist"
   ],
+  "auto-changelog": {
+    "//": "The release hook runs `auto-changelog -p`, which overwrites its output file. CHANGELOG.md is written by hand, so the generated copy is sent to an ignored file instead.",
+    "output": "CHANGELOG.generated.md"
+  },
   "n8n": {
     "n8nNodesApiVersion": 1,
     "strict": true,
