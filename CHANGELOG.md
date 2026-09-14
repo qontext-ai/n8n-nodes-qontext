@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-09-14
+
+Review feedback from n8n on 1.0.1. The node itself is unchanged.
+
+### Fixed
+- The codex file's `node` field is now the fully-qualified `@qontext/n8n-nodes-qontext.qontext`.
+  It carried only the package name, so n8n had nothing tying the codex metadata — the
+  categories and the documentation links — to the node whose `name` is `qontext`.
+
 ## [1.0.1] - 2026-09-10
 
 Review feedback from n8n on 1.0.0. The node's parameters are unchanged apart from the
