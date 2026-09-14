@@ -5,6 +5,14 @@ on:
     tags:
       - 'v*.*.*'
 
+# A tag push has fired duplicate events before. Without this, two runs publish
+# concurrently and npm rejects the loser with E409 over a half-staged version,
+# leaving the release neither live nor republishable. Queue instead of racing;
+# never cancel, since a cancelled run can be the one mid-publish.
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Publish to npm
