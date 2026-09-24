@@ -3,8 +3,9 @@ import { SEARCH_URL } from '../common/api';
 import { searchHybridOperation } from './searchHybrid.operation';
 import { searchRegexOperation } from './searchRegex.operation';
 
-// Both endpoints answer with `{ object, data }` and no pagination metadata, so the
-// `data` array is always split into one item per result.
+// Both endpoints answer the list envelope, but a search is always one page: `hasMore`
+// is always false and `nextCursor` null. So the `data` array is always split into one
+// item per result.
 const splitResults: INodeProperties['routing'] = {
 	output: {
 		postReceive: [

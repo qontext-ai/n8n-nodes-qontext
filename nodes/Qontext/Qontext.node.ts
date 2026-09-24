@@ -34,13 +34,13 @@ export class Qontext implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [{ name: 'qontextApi', required: true }],
 		// Shown on the output, after the run, because the thing worth saying is about the
-		// shape that came back: Update Content answers 202 with a blocked change instead of
+		// shape that came back: Update Content answers 202 with a change in review instead of
 		// an edit when the file is protected or the edit collided, and that is a success, so
 		// nothing else in the UI marks it.
 		hints: [
 			{
 				message:
-					'Check <code>object</code> on the output. <code>edit</code> means the content landed; <code>change</code> means it was held for review and there is no <code>file</code> key to read.',
+					'Check <code>object</code> on the output. <code>edit</code> means the content was accepted; <code>change</code> means it is in review and there is no <code>file</code> key to read.',
 				type: 'info',
 				location: 'outputPane',
 				displayCondition: '={{ $parameter.operation === "updateContent" }}',
