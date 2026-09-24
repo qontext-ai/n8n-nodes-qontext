@@ -37,7 +37,7 @@ export const fileOperations: INodeProperties[] = [
 				value: 'delete',
 				action: 'Delete a file',
 				description:
-					'Delete a file. Its change history goes with it, so this is not reversible. A protected file, or one with changes awaiting review, is refused.',
+					'Delete a file. Its change history goes with it, so this is not reversible. A protected file, or one with changes in review, is refused.',
 				routing: {
 					request: {
 						method: 'DELETE',
@@ -100,7 +100,7 @@ export const fileOperations: INodeProperties[] = [
 				name: 'Update Content',
 				value: 'updateContent',
 				action: 'Update file content',
-				description: 'Replace the entire file content, based on the Base Change ID of the file. If the file changed first the edit is merged when possible, so use the returned content for the next edit.',
+				description: 'Replace the entire file content, based on the Base Change ID of the file. If the file changed first the two versions are combined when possible, so use the returned content for the next edit.',
 				routing: {
 					request: {
 						method: 'PUT',

@@ -115,7 +115,7 @@ Note the asymmetry with folders: a file moves via **New Folder ID**, a folder vi
 #### Delete
 Deletes a file and outputs `{ "success": true }`. Its change history goes with it, so
 this is **not reversible** through the API. A protected file, or one with changes still
-awaiting review, is refused (`file_protected` / `pending_changes`) and nothing is
+in review, is refused (`file_protected` / `changes_in_review`) and nothing is
 removed — clear **Protected** first if you mean to delete it.
 
 - **File ID** (required)
@@ -129,7 +129,7 @@ Replaces the entire content of a file.
 
 Qontext uses optimistic concurrency, so you must read the file before writing it —
 use **File → Get** first and pass its `lastChangeId` into **Base Change ID**. The same
-Get also returns the current `content`, so the text you are revising and the base you
+Get also returns the live `content`, so the text you are revising and the base you
 send with it come from one request:
 
 ```
@@ -137,28 +137,28 @@ Qontext (File → Get)  →  edit {{ $json.content }}  →  Qontext (File → Up
                                                           Base Change ID: {{ $json.lastChangeId }}
 ```
 
-If the file changed in the meantime, the edit is merged where possible. The response's
-`content` is what actually landed, which is not always what you sent — adopt it before
+If the file changed in the meantime, the two versions are combined where possible. The response's
+`content` is what was actually accepted, which is not always what you sent — adopt it before
 editing the file again.
 
-> **The edit does not always land, and a blocked edit is not an error.** Protection is
+> **The edit is not always accepted, and an edit in review is not an error.** Protection is
 > Qontext's human-review mechanism: a write to a protected file becomes a change for
-> someone to approve rather than an edit that merges. So if the file is **protected**, or
-> your edit collides on the same lines as work that landed since, the
+> someone to accept rather than an edit applied at once. So if the file is **protected**, or
+> your edit collides on the same lines as a change accepted since, the
 > API answers `202` — a *success* your workflow will not catch with error handling — and
 > the output has a **different shape**:
 >
 > | outcome | output |
 > |---|---|
-> | landed | `{ "object": "edit", "file": { … }, "content": "…" }` |
-> | blocked | `{ "object": "change", "id": "chg_…", "status": "blocked", "reason": "protected" \| "conflict", "fileIds": [ … ] }` |
+> | accepted | `{ "object": "edit", "file": { … }, "content": "…" }` |
+> | in review | `{ "object": "change", "id": "chg_…", "status": "in_review", "reason": "protected" \| "conflict", "fileIds": [ … ] }` |
 >
-> A blocked result has **no `file` key**, so a downstream node reading
+> A result in review has **no `file` key**, so a downstream node reading
 > `{{ $json.file.lastChangeId }}` breaks. Branch on `{{ $json.object }}` (an IF node
 > testing for `edit`) whenever the file might be protected or concurrently edited.
 >
-> A blocked change also **pins the file**: until someone resolves it, deleting that file
-> or any folder containing it is refused with `pending_changes`. There is no v1 endpoint
+> A change in review also **pins the file**: until someone resolves it, deleting that file
+> or any folder containing it is refused with `changes_in_review`. There is no v1 endpoint
 > to resolve a change, so this is done in the Qontext UI.
 
 ### Folder
@@ -229,9 +229,8 @@ code — the precise `detail` is in the node's error output, under `context.data
 | code | status | when |
 |---|---|---|
 | `invalid_request` | 400 | Unknown or malformed field; two mutually exclusive filters; not exactly one action on Update |
-| `invalid_id` | 400 | An ID is not of the form `doc_…` / `dir_…` |
+| `invalid_id` | 400 | An ID is not of the form `doc_…` / `dir_…`, or Base Change ID is not of the form `chg_…` |
 | `invalid_cursor` | 400 | The cursor is malformed, or was issued for a different query — start again from the first page |
-| `invalid_change_id` | 400 | Base Change ID is not of the form `chg_…` |
 | `invalid_base_change` | 400 | Base Change ID names no change of this file |
 | `unauthenticated` | 401 | Missing or invalid API key |
 | `forbidden` | 403 | The key may not perform this write |
@@ -239,7 +238,7 @@ code — the precise `detail` is in the node's error output, under `context.data
 | `path_already_exists` | 409 | Something is already at that path — Create is never an upsert |
 | `folder_not_empty` | 409 | Delete a folder that still has contents; send Recursive |
 | `file_protected` | 409 | Delete a protected file; clear Protected first |
-| `pending_changes` | 409 | The file, or a file in the folder, has changes awaiting review |
+| `changes_in_review` | 409 | The file, or a file in the folder, has changes in review |
 | `content_too_large` | 422 | Content is longer than the published limit |
 | `internal_error` | 500 | Unexpected failure, already reported |
 | `service_unavailable` | 503 | Temporarily unreachable — honour `Retry-After` |

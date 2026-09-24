@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-09-24
+
+The Qontext API renamed three request members and adopted its change vocabulary: a
+change is **accepted**, never landed or merged; two versions of one file are
+**combined**; a change waiting for someone is **in review**, never blocked or pending.
+This release sends the new names and uses the same words.
+
+### Breaking
+- **Update Content** answers a change in review with `"status": "in_review"`, not
+  `"blocked"`. An IF node testing `{{ $json.status }}` for `blocked` never matches again;
+  test for `in_review`, or branch on `{{ $json.object }}` as the README recommends — that
+  did not change.
+- Other output members were renamed by the API and reach your workflow unchanged, so
+  an expression reading the old name finds nothing:
+  - File: `folderPath` → `parentPath`. `parentId` is new on files, `parentPath` on folders.
+  - Search sources: `type` → `object`.
+  - Error codes: `pending_changes` → `changes_in_review`; `invalid_change_id` is folded
+    into `invalid_id`.
+
+These took effect when the API changed, whatever node version is installed.
+
+### Changed
+- The node sends the API's new request names: `parent_id` on **File > Get Many** by
+  folder, `name` on **File > Create** in a folder, `parentId` on **File > Update > Move**.
+  1.0.2 still works only through deprecated aliases the API will remove. The node's
+  fields are unchanged, so saved workflows keep their values.
+- Descriptions, notices and the output hint say accepted, combined, in review and live.
+
 ## [1.0.2] - 2026-09-14
 
 Review feedback from n8n on 1.0.1. The node itself is unchanged.

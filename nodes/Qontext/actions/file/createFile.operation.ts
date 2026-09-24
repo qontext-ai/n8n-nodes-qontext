@@ -4,7 +4,7 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { folderLocator } from '../common/locator';
 
-// The endpoint takes either `path` or `parentId` + `fileName`, never a mix. Each
+// The endpoint takes either `path` or `parentId` + `name`, never a mix. Each
 // field carries its own `routing.send` and is gated on the Create By selector, so
 // a hidden field contributes nothing to the body and the request always matches
 // exactly one branch of the schema.
@@ -91,7 +91,7 @@ export const createFileOperation: INodeProperties[] = [
 		routing: {
 			send: {
 				type: 'body',
-				property: 'fileName',
+				property: 'name',
 				value: '={{$value}}',
 			},
 		},

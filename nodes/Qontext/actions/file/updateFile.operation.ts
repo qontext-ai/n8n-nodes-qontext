@@ -4,7 +4,7 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { fileLocator, folderLocator, rootAware } from '../common/locator';
 
-// The endpoint takes exactly one of `name`, `folderId` or `protected`. Sending two is
+// The endpoint takes exactly one of `name`, `parentId` or `protected`. Sending two is
 // rejected rather than ordered, because they are separate writes with no transaction
 // across them: a request doing two could land the first and fail the second with no
 // way to say which. The Action selector gates which field is visible, and a hidden
@@ -43,7 +43,7 @@ export const updateFileOperation: INodeProperties[] = [
 			{
 				name: 'Set Protected',
 				value: 'protected',
-				description: 'Change whether writes to this file go to review instead of merging',
+				description: 'Change whether writes to this file go to review instead of being accepted',
 			},
 		],
 	},
@@ -78,7 +78,7 @@ export const updateFileOperation: INodeProperties[] = [
 		displayOptions: {
 			show: { resource: ['file'], operation: ['update'], updateBy: ['move'] },
 		},
-		routing: rootAware('folderId'),
+		routing: rootAware('parentId'),
 	}),
 	{
 		displayName: 'Protected',
@@ -86,7 +86,7 @@ export const updateFileOperation: INodeProperties[] = [
 		type: 'boolean',
 		default: false,
 		description:
-			'Whether a change touching this file goes to review instead of merging straight away',
+			'Whether a change touching this file goes to review instead of being accepted straight away',
 		displayOptions: {
 			show: {
 				resource: ['file'],

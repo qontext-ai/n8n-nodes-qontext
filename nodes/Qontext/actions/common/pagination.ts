@@ -127,7 +127,6 @@ export const listRouting: Pick<INodePropertyRouting, 'operations'> = {
 						limit: '={{ $request.qs.limit }}',
 						path: '={{ $request.qs.path }}',
 						path_prefix: '={{ $request.qs.path_prefix }}',
-						folder_id: '={{ $request.qs.folder_id }}',
 						parent_id: '={{ $request.qs.parent_id }}',
 						cursor: '={{ $response.body ? $response.body.nextCursor : undefined }}',
 					},

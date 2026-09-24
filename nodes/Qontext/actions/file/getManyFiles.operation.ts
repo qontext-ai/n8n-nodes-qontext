@@ -99,7 +99,7 @@ export const getManyFilesOperation: INodeProperties[] = [
 		routing: {
 			send: {
 				type: 'query',
-				property: 'folder_id',
+				property: 'parent_id',
 				value: '={{$value}}',
 			},
 		},
