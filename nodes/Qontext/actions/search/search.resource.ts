@@ -50,7 +50,7 @@ export const searchOperations: INodeProperties[] = [
 				value: 'regex',
 				action: 'Search file lines with a regular expression',
 				description:
-					'Find lines that match an RE2 regular expression, citing the file each came from. Results are not relevance-ranked.',
+					'Find lines that match an RE2 regular expression, with the file each came from. Results are not relevance-ranked.',
 				routing: {
 					request: {
 						method: 'POST',
