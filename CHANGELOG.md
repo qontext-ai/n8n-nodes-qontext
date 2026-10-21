@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-10-21
+
+The Qontext API now tells the matched file apart from the external records it came
+from. Search results name the file in `file` and list those records in `sources`.
+
+### Breaking
+- Search results no longer carry `source`. An expression reading
+  `{{ $json.source.path }}` or `{{ $json.source.fileId }}` finds nothing; read
+  `{{ $json.file.path }}` or `{{ $json.file.fileId }}`. `file` has the same members and
+  is present even when **Include Sources** is off.
+- `sources` is new: with **Include Sources** on, an array of the external records the
+  file came from, each with `integration`, `dataType` and `sourceId`. It is `[]` for a
+  file written by hand.
+
+These took effect when the API changed, whatever node version is installed.
+
+### Changed
+- **Include Sources** now says what it controls: the external records, not the file.
+  The parameter and its default are unchanged.
+
 ## [1.1.0] - 2026-09-24
 
 The Qontext API renamed three request members and adopted its change vocabulary: a

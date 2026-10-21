@@ -208,17 +208,21 @@ also matches on meaning, so it finds files that answer the query without using t
 words.
 
 - **Query** (required): a few words or a whole question
-- **Limit** (default 10, max 500)
-- **Include Sources** (default on): cite the file each result came from
+- **Limit** (default 50, max 500)
+- **Include Sources** (default on): list the external records each matched file came from
 
 #### By Regex
 Finds lines matching an [RE2](https://github.com/google/re2/wiki/Syntax) regular
-expression. Each result cites the file the lines came from. Results are not
-relevance-ranked.
+expression. Results are not relevance-ranked.
 
 - **Query** (required): the RE2 pattern
-- **Limit** (default 10, max 500)
+- **Limit** (default 50, max 500)
 - **Include Sources** (default on)
+
+Each result carries the matched file in `file` (`fileId`, `path`, `object`, `url`),
+whether or not Include Sources is on. With it on, `sources` lists the external records
+the file came from, each as `integration`, `dataType` and `sourceId` (for example
+`Notion`, `Page`, `policy-page`). A file written by hand has none, so `sources` is `[]`.
 
 ## Errors
 

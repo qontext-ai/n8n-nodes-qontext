@@ -60,7 +60,8 @@ export const searchHybridOperation: INodeProperties[] = [
 		name: 'includeSources',
 		type: 'boolean',
 		default: true,
-		description: 'Whether to cite the file each result came from',
+		description:
+			'Whether to list the external records (such as a Notion page) each matched file came from. The matched file is always returned.',
 		displayOptions: {
 			show: {
 				resource: ['search'],
