@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2026-11-16
 
 The Qontext API now requires a `mode` on hybrid and regex search, and both answer
 passages or whole files with full file metadata. Without `mode` they answer 400, so
