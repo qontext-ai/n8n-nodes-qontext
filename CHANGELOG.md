@@ -5,6 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+The Qontext API now requires a `mode` on hybrid and regex search, and both answer
+passages or whole files with full file metadata. Without `mode` they answer 400, so
+every **Search** node on 1.1.1 fails: By Regex since late October, By Meaning since
+2026-11-11. This release sends `mode` and makes search work again.
+
+**Update your expressions when you update the node.** 1.1.1 never received the new
+response shape: the API sends it only to a request that carries `mode`, which 1.1.1
+never sent. So the result changes below reach a workflow the moment it runs on this
+version, and not before.
+
+### Breaking
+- Every search has a new **Return** field that sends `mode`:
+  - `Files` (the default, and what a saved 1.1.1 workflow gets): one item per
+    matching file with the whole file in `text`, as 1.1.1 returned. **Limit** counts
+    files.
+  - `Passages`: one item per matching passage, with the passage in `text`. A file
+    with several matching passages yields several items, so a following node such
+    as **File → Update Content** runs once per passage. **Limit** counts passages.
+- **By Meaning** now ranks files by their best-matching passage, so the order can
+  change.
+- **By Regex** matches the pattern against passages, not lines, and anchors apply to
+  passage boundaries. `matches` (with `line` and `text`) is gone. With Return =
+  Files, `text` is the whole file instead of the matched lines.
+- Every result carries `kind`: `"file"` (whole file in `text`) or `"passage"`.
+- `file.fileId` is now `file.id`, and `file.url` is gone. An expression reading
+  `{{ $json.file.fileId }}` finds nothing; read `{{ $json.file.id }}`.
+- `file` now holds the same metadata **File → Get** returns: `name`, `parentId`,
+  `parentPath`, `protected`, `lastChangeId`, `createdAt` and `updatedAt` besides
+  `object`, `id` and `path`.
+- By Meaning refuses a whitespace-only **Query** with 400 `invalid_request`.
+
+These API changes apply whatever node version is installed:
+- `folder_protected` is gone. Every protection refusal answers 409 `file_protected`,
+  including a folder delete over a protected folder or file. An IF node or error
+  branch testing `{{ $json.code }}` for `folder_protected` never matches again; test
+  for `file_protected`.
+- **Folder → Update** can now be refused with 409 `file_protected` when a move would
+  take a file out from under a protected folder.
+- **Folder → Delete** with Recursive can now be refused with 422 `too_many_edits` when
+  the folder holds more files and folders than one delete accepts.
+
+### Added
+- **By Keyword** search: ranks by how well the wording matches, for names, codes and
+  exact terms. Best match first.
+- **By Semantic Similarity** search: ranks by meaning only, ignoring wording. Best
+  match first.
+- **Expand Query** on By Meaning (default on): turn it off to search only the query as
+  written.
+
+### Changed
+- The README documents the protection refusal on folder delete and move, now always
+  `file_protected` (`folder_protected` is gone), and `too_many_edits` (422) for a
+  recursive folder delete over the deletion limit.
+
 ## [1.1.1] - 2026-10-21
 
 The Qontext API now tells the matched file apart from the external records it came

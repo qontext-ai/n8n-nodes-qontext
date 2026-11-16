@@ -9,7 +9,8 @@ inside every tool. Context lives as files in folders, with access control and re
 changes, and is reachable over the API, MCP and CLI.
 
 This node puts that repository inside n8n. Workflows can create and edit files, organise
-folders, and search the repository by meaning or by regular expression — so a workflow
+folders, and search the repository by meaning, by semantic similarity, by keyword or by
+regular expression — so a workflow
 becomes one of the things keeping your context current, not just a consumer of it. The
 node is also available as an AI Agent tool, so an agent can look something up, read a
 file and write one back as part of its own reasoning.
@@ -114,8 +115,8 @@ Note the asymmetry with folders: a file moves via **New Folder ID**, a folder vi
 
 #### Delete
 Deletes a file and outputs `{ "success": true }`. Its change history goes with it, so
-this is **not reversible** through the API. A protected file, or one with changes still
-in review, is refused (`file_protected` / `changes_in_review`) and nothing is
+this is **not reversible** through the API. A protected file, one in a protected folder, or
+one with changes still in review is refused (`file_protected` / `changes_in_review`) and nothing is
 removed — clear **Protected** first if you mean to delete it.
 
 - **File ID** (required)
@@ -189,6 +190,9 @@ it survives, so IDs held elsewhere stay valid — only the paths below it change
 - **Action**: `Rename` (then **Name**) or `Move` (then **New Parent Folder ID**,
   choosing `/ (Root)` to move it to the root)
 
+A move that would take a file out from under a protected folder, so it loses its
+protection, is refused (`file_protected`).
+
 #### Delete
 Deletes a folder and outputs `{ "success": true }`.
 
@@ -196,32 +200,82 @@ Deletes a folder and outputs `{ "success": true }`.
 - **Recursive** (default off): delete everything below it too. Left off, a folder that
   still has contents is refused and nothing is removed.
 
+A folder holding a protected file, or a protected folder, is refused (`file_protected`).
+So is a recursive delete over more files and folders than the deletion limit
+(`too_many_edits`); delete smaller groups instead.
+
 ### Search
 
-Both operations return one n8n item per result, and a result appears only if your API
+Every operation returns one n8n item per result, and a result appears only if your API
 key can read the file. A new or changed file is not searchable straight away, so search
 again in a moment if you do not see it.
 
-#### By Meaning
-Finds the files that match your query and returns their content, best match first. It
-also matches on meaning, so it finds files that answer the query without using the same
-words.
+| Operation | Matches on | Order |
+|---|---|---|
+| By Meaning | Wording and meaning (hybrid) — the best default | Best match first |
+| By Keyword | Wording only — suits names, codes and exact terms | Best match first |
+| By Semantic Similarity | Meaning only, even with no words in common | Best match first |
+| By Regex | An RE2 pattern | Not ranked |
 
-- **Query** (required): a few words or a whole question
-- **Limit** (default 50, max 500)
-- **Include Sources** (default on): list the external records each matched file came from
+#### Return
+Every search has a **Return** field that chooses what each item is:
 
-#### By Regex
-Finds lines matching an [RE2](https://github.com/google/re2/wiki/Syntax) regular
-expression. Results are not relevance-ranked.
+- **Files** (default): one item per matching file, with its whole content in `text`. A
+  following node such as **File → Update Content** runs once per file. **Limit** counts
+  files. The ranked searches order files by their best-matching passage.
+- **Passages**: one item per matching passage, with the passage in `text`. A file with
+  several matching passages appears once for each, and a following node runs once per
+  passage. **Limit** counts passages, so a few files can fill it.
 
-- **Query** (required): the RE2 pattern
+#### By Keyword
+Finds the files, or the passages, whose wording best matches your query, best match
+first.
+
+- **Query** (required): the words to look for
+- **Return** (default `Files`): see [Return](#return)
 - **Limit** (default 50, max 500)
 - **Include Sources** (default on)
 
-Each result carries the matched file in `file` (`fileId`, `path`, `object`, `url`),
-whether or not Include Sources is on. With it on, `sources` lists the external records
-the file came from, each as `integration`, `dataType` and `sourceId` (for example
+#### By Meaning
+Finds the files, or the passages, that match your query, best match first. It also
+matches on meaning, so it finds files that answer the query without using the same
+words.
+
+- **Query** (required): a few words or a whole question
+- **Return** (default `Files`): see [Return](#return)
+- **Limit** (default 50, max 500)
+- **Include Sources** (default on): list the external records each matched file came from
+- **Expand Query** (default on): also search rewrites of the query. Turn it off to search
+  only the query as written
+
+#### By Regex
+Finds the files, or the passages, matching a case-sensitive
+[RE2](https://github.com/google/re2/wiki/Syntax) regular expression. The pattern is
+matched against each passage, not each line, and anchors apply to passage boundaries.
+Results are not relevance-ranked.
+
+- **Query** (required): the RE2 pattern
+- **Return** (default `Files`): see [Return](#return)
+- **Limit** (default 50, max 500)
+- **Include Sources** (default on)
+
+#### By Semantic Similarity
+Finds the files, or the passages, closest in meaning to your query, best match first. It
+ignores wording, so it finds files that answer the query even when they share none of
+its words.
+
+- **Query** (required): a few words or a whole question
+- **Return** (default `Files`): see [Return](#return)
+- **Limit** (default 50, max 500)
+- **Include Sources** (default on)
+
+Each result has `kind` and `text`. `"kind": "file"` carries the whole file in `text`;
+`"kind": "passage"` carries the matching passage, following Return.
+
+`file` holds the same metadata **File → Get** returns: `object`, `id`, `path`, `name`,
+`parentId`, `parentPath`, `protected`, `lastChangeId`, `createdAt` and `updatedAt`. It is
+there whether or not Include Sources is on. With it on, `sources` lists the external
+records the file came from, each as `integration`, `dataType` and `sourceId` (for example
 `Notion`, `Page`, `policy-page`). A file written by hand has none, so `sources` is `[]`.
 
 ## Errors
@@ -241,9 +295,10 @@ code — the precise `detail` is in the node's error output, under `context.data
 | `file_not_found` / `folder_not_found` | 404 | No such item readable with this key. An item in another workspace answers the same way, so existence does not leak |
 | `path_already_exists` | 409 | Something is already at that path — Create is never an upsert |
 | `folder_not_empty` | 409 | Delete a folder that still has contents; send Recursive |
-| `file_protected` | 409 | Delete a protected file; clear Protected first |
+| `file_protected` | 409 | Delete a protected file, or a folder holding one; or move a folder so a file would lose its protection. A file is protected by its own flag or by a protected folder above it. Clear Protected first |
 | `changes_in_review` | 409 | The file, or a file in the folder, has changes in review |
 | `content_too_large` | 422 | Content is longer than the published limit |
+| `too_many_edits` | 422 | A recursive folder delete covers more files and folders than the deletion limit. Delete smaller groups |
 | `internal_error` | 500 | Unexpected failure, already reported |
 | `service_unavailable` | 503 | Temporarily unreachable — honour `Retry-After` |
 

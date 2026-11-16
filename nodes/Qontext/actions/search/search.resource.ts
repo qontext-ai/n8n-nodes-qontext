@@ -1,23 +1,9 @@
 import type { INodeProperties } from 'n8n-workflow';
-import { SEARCH_URL } from '../common/api';
+import { searchRouting } from './fields';
 import { searchHybridOperation } from './searchHybrid.operation';
+import { searchKeywordOperation } from './searchKeyword.operation';
 import { searchRegexOperation } from './searchRegex.operation';
-
-// Both endpoints answer the list envelope, but a search is always one page: `hasMore`
-// is always false and `nextCursor` null. So the `data` array is always split into one
-// item per result.
-const splitResults: INodeProperties['routing'] = {
-	output: {
-		postReceive: [
-			{
-				type: 'rootProperty',
-				properties: {
-					property: 'data',
-				},
-			},
-		],
-	},
-};
+import { searchSemanticOperation } from './searchSemantic.operation';
 
 export const searchOperations: INodeProperties[] = [
 	{
@@ -32,36 +18,42 @@ export const searchOperations: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'By Keyword',
+				value: 'keyword',
+				action: 'Search files by keyword',
+				description:
+					'Find the files whose wording best matches your query and return their content, best match first. Suits names, codes and exact terms.',
+				routing: searchRouting('keyword'),
+			},
+			{
 				name: 'By Meaning',
 				value: 'hybrid',
 				action: 'Search files by meaning',
 				description:
 					'Find the files that match your query and return their content, best match first. Also matches on meaning, so it finds files that answer the query without using the same words.',
-				routing: {
-					request: {
-						method: 'POST',
-						url: `${SEARCH_URL}/hybrid`,
-					},
-					...splitResults,
-				},
+				routing: searchRouting('hybrid'),
 			},
 			{
 				name: 'By Regex',
 				value: 'regex',
-				action: 'Search file lines with a regular expression',
+				action: 'Search files with a regular expression',
 				description:
-					'Find lines that match an RE2 regular expression, with the file each came from. Results are not relevance-ranked.',
-				routing: {
-					request: {
-						method: 'POST',
-						url: `${SEARCH_URL}/regex`,
-					},
-					...splitResults,
-				},
+					'Find passages or files that match an RE2 regular expression. Results are not relevance-ranked.',
+				routing: searchRouting('regex'),
+			},
+			{
+				name: 'By Semantic Similarity',
+				value: 'semantic',
+				action: 'Search files by semantic similarity',
+				description:
+					'Find the files closest in meaning to your query and return their content, best match first. Matches on meaning only, not wording.',
+				routing: searchRouting('semantic'),
 			},
 		],
 		default: 'hybrid',
 	},
 	...searchHybridOperation,
+	...searchKeywordOperation,
 	...searchRegexOperation,
+	...searchSemanticOperation,
 ];
